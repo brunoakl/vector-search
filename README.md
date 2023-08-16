@@ -1,5 +1,6 @@
 ### Vetor em Interface Gráfica
 Projeto de Análise de Algoritmos sobre manipulação de vetores com busca linear, ordenada e maxElemento
+
 Autores: Bruno Machado Ferreira e Ernani Mendes da Fonseca Neto
 
 ## Ideia inicial:
