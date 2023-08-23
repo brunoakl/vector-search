@@ -58,10 +58,31 @@ class VetorDinamico:
                 self.tamanho -= 1
             else:
                 i += 1
+    
+    def clear(self):
+        self.tamanho = 0
+        self.dados = [None] * self.capacidade
 
     #Junta nome e número no vetor
     def __str__(self):
         return ', '.join(map(str, self.dados[:self.tamanho]))
+    
+    #Busca ordenada
+    def busca_ordenada(self, valor):
+       inicio = 0
+       fim = self.tamanho - 1
+
+       while inicio <= fim:
+           meio = (inicio + fim) // 2
+           num_atual, _ = self.dados[meio]
+
+           if num_atual == valor:
+               return meio
+           elif num_atual < valor:
+               inicio = meio + 1
+           else:
+               fim = meio - 1
+       return None
 
 class App:
     def __init__(self, root):
@@ -114,6 +135,14 @@ class App:
         self.scrollbar = tk.Scrollbar(root, command=self.output.yview)
         self.output.config(yscrollcommand=self.scrollbar.set)
         self.output.grid(row=6, column=0, pady=20, padx=10, columnspan=2)
+
+        #Botão limpar
+        self.btnClear = tk.Button(root, text="Limpar Vetor", command=self.limpar_vetor)
+        self.btnClear.grid(row=7, column=0, pady=5, padx=10, columnspan=2)
+
+        #Botão de busca ordenada
+        self.btnSearch = tk.Button(root, text="Busca ordenada", command=self.realizar_busca)
+        self.btnSearch.grid(row=8, column=0, pady=5, padx=10, columnspan=2)
 
     #Funções de manipulação do vetor
     #Autoexplicativas
@@ -168,10 +197,32 @@ class App:
         self.output.delete(1.0, tk.END)  # Limpar o widget Text
         self.output.insert(tk.END, str(self.vetor))
 
+    #Limpa o vetor
+    def limpar_vetor(self):
+        self.vetor.clear()
+        self.update_display()
+
+    #Requisita uma busca ordenada
+    def realizar_busca(self):
+        try:
+            valor = int(self.entryNumber.get())
+            indice = self.vetor.busca_ordenada(valor)
+            if indice is not None:
+                _, nome = self.vetor.dados[indice]
+                if nome:
+                    messagebox.showinfo("Resultado da Busca", f"O valor {valor} foi encontrado com o nome associado: {nome}")
+                else:
+                    messagebox.showinfo("Resultado da Busca", f"O valor {valor} foi encontrado, mas sem nome associado.")
+            else:
+                messagebox.showerror("Erro", f"O valor {valor} não foi encontrado no vetor.")
+        except ValueError:
+            messagebox.showerror("Erro", "Por favor, insira um número válido.")
+
+
     
 #Especificações da janela do app
 root = tk.Tk()
 root.title("Vetor Dinâmico")
-root.geometry("500x500")
+root.geometry("500x550")
 app = App(root)
 root.mainloop()
