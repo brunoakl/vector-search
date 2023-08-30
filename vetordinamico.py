@@ -83,6 +83,19 @@ class VetorDinamico:
            else:
                fim = meio - 1
        return None
+    
+    #Pesquisa pelo elemento máximo
+    def max_element(self):
+        """ Retorna o maior elemento do vetor e seu nome associado (se houver). """
+        if self.tamanho == 0:
+            return None, None
+
+        max_num, max_nome = self.dados[0]
+        for i in range(1, self.tamanho):
+            num, nome = self.dados[i]
+            if num > max_num:
+                max_num, max_nome = num, nome
+        return max_num, max_nome
 
 class App:
     def __init__(self, root):
@@ -143,6 +156,11 @@ class App:
         #Botão de busca ordenada
         self.btnSearch = tk.Button(root, text="Busca ordenada", command=self.realizar_busca)
         self.btnSearch.grid(row=8, column=0, pady=5, padx=10, columnspan=2)
+
+        # Botão para encontrar o maxElemento
+        self.btnMaxElement = tk.Button(root, text="Encontrar Máximo", command=self.find_max)
+        self.btnMaxElement.grid(row=9, column=0, pady=5, padx=10, columnspan=2)
+    
 
     #Funções de manipulação do vetor
     #Autoexplicativas
@@ -217,6 +235,16 @@ class App:
                 messagebox.showerror("Erro", f"O valor {valor} não foi encontrado no vetor.")
         except ValueError:
             messagebox.showerror("Erro", "Por favor, insira um número válido.")
+
+    #Encontra o valor máximo
+    def find_max(self):
+        max_num, max_nome = self.vetor.max_element()
+        if max_num is None:
+            messagebox.showinfo("Resultado", "O vetor está vazio.")
+        elif max_nome:
+            messagebox.showinfo("Resultado", f"O maior valor é {max_num} com o nome associado: {max_nome}")
+        else:
+            messagebox.showinfo("Resultado", f"O maior valor é {max_num} mas não tem nome associado.")
 
 
     
