@@ -1,6 +1,6 @@
 import tkinter as tk
 import random
-from tkinter import messagebox
+from tkinter import messagebox, IntVar
 
 class VetorDinamico:
     def sort(self):
@@ -99,7 +99,9 @@ class VetorDinamico:
 
 class App:
     def __init__(self, root):
-        self.vetor = VetorDinamico()
+        self.vetor1 = VetorDinamico()
+        self.vetor2 = VetorDinamico()
+        self.selected_vetor = IntVar(value=1)
 
         #Organizando campos de texto
         self.inputFrame = tk.Frame(root)
@@ -120,7 +122,6 @@ class App:
         
         self.entryName = tk.Entry(self.inputFrame, width=20)
         self.entryName.grid(row=1, column=1, sticky=tk.W)
-        
         
         #Botões
         #Adiciona ao vetor
@@ -160,14 +161,23 @@ class App:
         # Botão para encontrar o maxElemento
         self.btnMaxElement = tk.Button(root, text="Encontrar Máximo", command=self.find_max)
         self.btnMaxElement.grid(row=9, column=0, pady=5, padx=10, columnspan=2)
-    
+        
+        # Escolhe qual vetor operar
+        self.chkVetor1 = tk.Checkbutton(root, text="Vetor 1", variable=self.selected_vetor, onvalue=1, command=self.switch_vetor)
+        self.chkVetor1.grid(row=10, column=0, pady=5, padx=10)
+        
+        self.chkVetor2 = tk.Checkbutton(root, text="Vetor 2", variable=self.selected_vetor, onvalue=2, command=self.switch_vetor)
+        self.chkVetor2.grid(row=10, column=1, pady=5, padx=10)
+        
+        self.btnIntercalar = tk.Button(root, text="Intercalar Vetores", command=self.intercalar_vetores)
+        self.btnIntercalar.grid(row=11, column=0, pady=5, padx=10, columnspan=2)
 
     #Funções de manipulação do vetor
     #Autoexplicativas
     def adicionar(self):
         try:
             valor = int(self.entryNumber.get())  # Corrigido aqui
-            self.vetor.append(valor)
+            self.vetor_atual.append(valor)
             self.update_display()
         except ValueError:
             messagebox.showerror("Erro", "Por favor, insira um número válido.")
@@ -213,7 +223,7 @@ class App:
     #Atualiza o widget do vetor com os dados que foram adicionados ou apagados
     def update_display(self):
         self.output.delete(1.0, tk.END)  # Limpar o widget Text
-        self.output.insert(tk.END, str(self.vetor))
+        self.output.insert(tk.END, str(self.vetor_atual))
 
     #Limpa o vetor
     def limpar_vetor(self):
@@ -245,6 +255,29 @@ class App:
             messagebox.showinfo("Resultado", f"O maior valor é {max_num} com o nome associado: {max_nome}")
         else:
             messagebox.showinfo("Resultado", f"O maior valor é {max_num} mas não tem nome associado.")
+            
+    def switch_vetor(self):
+        """ Atualiza a visualização quando trocar de vetor """
+        self.update_display()
+
+    @property
+    def vetor_atual(self):
+        """ Retorna o vetor atualmente selecionado """
+        return self.vetor1 if self.selected_vetor.get() == 1 else self.vetor2
+
+    # Função para intercalar vetores
+    def intercalar_vetores(self):
+        result = VetorDinamico()
+        i, j = 0, 0
+        while i < self.vetor1.tamanho or j < self.vetor2.tamanho:
+            if i < self.vetor1.tamanho:
+                result.append(self.vetor1.dados[i][0], self.vetor1.dados[i][1])
+                i += 1
+            if j < self.vetor2.tamanho:
+                result.append(self.vetor2.dados[j][0], self.vetor2.dados[j][1])
+                j += 1
+        self.output.delete(1.0, tk.END)
+        self.output.insert(tk.END, str(result))
 
 
     
